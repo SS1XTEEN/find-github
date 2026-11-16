@@ -25,7 +25,13 @@ It stops to ask only when the choice is expensive — a new dependency, a large 
 
 ## Installation
 
-Append `SKILL.md` to the file your agent reads at the start of every session (`AGENTS.md` or equivalent), or drop it in your agent's skills directory:
+**Ask your agent to install it.** Paste this line into any agent that can run commands:
+
+```
+Install the agent skill at https://github.com/SS1XTEEN/find-github: clone it into your skills directory, or append SKILL.md to the instruction file you read at the start of every session, then confirm it is loaded.
+```
+
+**Or install it yourself.** Append `SKILL.md` to the file your agent reads at the start of every session (`AGENTS.md` or equivalent), or clone it into your agent's skills directory:
 
 ```bash
 git clone https://github.com/SS1XTEEN/find-github <your-skills-dir>/find-github
