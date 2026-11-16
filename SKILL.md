@@ -15,6 +15,18 @@ This skill helps you find existing open-source code instead of writing everythin
 
 Most of the time you are not looking for a whole repository. You are looking for one thing that already needs to exist inside a project that is already underway — a loading animation, a drag handle, a file tree. The job is to find how people solved it, take the technique, and land working code fast.
 
+**The output is the finished feature, not a shortlist.** The user said "add an animated background" — they want the background in their site, plus one line saying where the approach came from. They do not want to hear that three repositories were found and be asked to choose. You decide; you write the code.
+
+Worked example of a correct outcome:
+
+> *User: "给网站加个粒子动画背景"*
+>
+> Agent searches, reads two implementations, writes the component, and answers:
+>
+> > Added `src/components/ParticleBackground.tsx` — a canvas particle field with drift-and-respawn, tuned to your theme tokens. Adapted from `owner/repo`; no new dependencies.
+
+That is the whole response. No candidate list, no question.
+
 ## When to Use This Skill
 
 Use this skill when:
@@ -33,7 +45,7 @@ Do **not** use this skill for:
 - "From scratch", "no dependencies", or "clean room" requests
 - A 5–10 line chunk you already know how to write — searching costs more than writing
 
-If the user asked explicitly, always search. If you triggered on your own, look quietly and report briefly — searching is cheap and needs no permission.
+If the user asked explicitly, always search. If you triggered on your own, do not announce it — search, decide, and deliver the feature as if you had simply known how to build it. Searching is cheap and needs no permission.
 
 ## Two Modes
 
@@ -108,7 +120,7 @@ Always qualify with `stars:>100 pushed:>DATE archived:false`, where DATE is abou
 
 If the API is rate-limited or empty, fall back to a web search for `site:github.com <terms>`, or fetch `https://github.com/topics/<topic>`.
 
-## Step 3: Verify Quality Before Recommending
+## Step 3: Verify Before You Trust It
 
 Do not recommend something based solely on search results. Drop anything that:
 
@@ -140,19 +152,32 @@ Locate the file through code search, the repository's contents listing, or a pat
 
 Do not clone a repository to read one file. Do not read a repository end to end.
 
-## Step 5: Choose How to Build On It
+## Step 5: Decide — Adapt, Reference, or Drop
 
-This is the decision agents get wrong most often. For a small self-contained piece, the cheapest good outcome is usually **read two or three implementations and write your own** — no dependency, fits the codebase, maybe 60 lines.
+After reading the files, you have exactly three outcomes. Pick one and move on. Do not present the options to the user.
+
+| Outcome | When it is right | What you then do |
+|---------|------------------|------------------|
+| **Adapt** | An implementation fits the need well enough to build on — code you can take, port, or install | Reimplement in your own style, vendor the piece, or add the dependency |
+| **Reference** | Nothing fits cleanly, but the reading taught you the mechanism, the edge cases, or the shape of the problem | Write it yourself, informed by what you learned |
+| **Drop** | The code is worse than what you would write, wrong stack, unlicensed, or tied to constraints you don't share | Write it yourself, ignoring the repo |
+
+How to choose:
+
+- **Adapt** when the code is close to your case and small enough to own. Prefer reimplementing over depending for anything self-contained; a dependency for a loading spinner is a bad trade.
+- **Reference** when the work is interesting but the implementations are entangled, opinionated, or too large to extract. You are after the technique, not the file.
+- **Drop** without guilt. Most search results are not worth taking. "I looked, it was worse, I wrote it" is a normal and correct outcome.
+
+Never force a repository into the answer because you found it. Finding something is not a reason to use it.
+
+The four build modes, once you have chosen **Adapt**:
 
 | The need is… | Do this |
 |--------------|---------|
 | Small and self-contained, a few hundred lines at most | **Reimplement** the technique |
-| A technique you don't know, but a small surface | **Reimplement**, credit the source |
 | Bigger than you want to own, actively maintained | **Vendor** the relevant part |
 | A standard, well-scoped problem (auth, payments, charts) | **Depend** on the library |
 | A whole-app starting point | **Fork** |
-
-Default to the cheapest row that works. A dependency for a loading spinner is a bad trade; hand-rolling a PDF parser is worse.
 
 ### License rules
 
@@ -167,18 +192,37 @@ Check before copying, and tell the user:
 
 Before trusting a repository, read its `package.json` scripts, `Makefile`, or setup steps. Do not run install or build in a freshly cloned stranger repository without looking — install scripts execute code. Use `npm ci --ignore-scripts` to inspect first.
 
-## Step 6: Present
+## Step 6: Deliver the Result
 
-**Mid-project** — two or three lines, then act:
+Write the code. Then report in one or two lines, in this shape:
 
 ```
-Found three implementations. The cleanest is a transform + threshold check in
-owner/repo (~70 lines, no deps). Adapting that approach — no dependency needed.
+<what was built and where> — <how it works, in a clause>. Adapted from
+owner/repo; no new dependencies.
 ```
 
-Do not stop for approval to look or to reimplement. Stop only when the choice is expensive: adding a dependency, vendoring a large chunk, or a license question.
+Examples:
 
-**Explicit ask or greenfield** — a compact list, one recommendation, name the runner-up:
+- `Added src/components/ParticleBackground.tsx — canvas particle field with drift-and-respawn, using your theme colors. Adapted from owner/repo; no deps.`
+- `Added useResizableSidebar — pointer-driven width with a min/max clamp and a 3-bar collapse under 900px. Wrote it from the approach in owner/repo rather than taking their code.`
+- `Built the background directly — the existing implementations were all tied to a physics engine you don't have.`
+
+The engine name, the star count, the license — mention them only when they matter to the decision the user has to live with (a copyleft dependency, a new package). Otherwise leave them out.
+
+### When to stop and ask instead
+
+Only when the choice is genuinely the user's, and expensive:
+
+- It requires **adding a dependency** the user might not want.
+- It means **vendoring or forking a large chunk** into their repository.
+- The license **forces something** (GPL/AGPL) the user must agree to.
+- Two options are close enough in cost that the preference is a matter of taste.
+
+Even then, ask a decision-shaped question — "this needs `three` for the 3D version, or I can do a flat CSS one with no dependency — which?" — not a menu of repositories.
+
+### Greenfield
+
+For a whole app the user is starting from nothing, the same rule applies, but the decision is a real fork in the road, so present it: the repository you would build on, the runner-up, and why. This is the one case where a short list is the answer — the user is choosing a foundation, not a detail.
 
 ```
 1. owner/repo  ★12.3k · pushed 2026-09 · MIT
@@ -186,7 +230,7 @@ Do not stop for approval to look or to reimplement. Stop only when the choice is
    Catch: <one line — the real cost of adopting it>
 ```
 
-Never pad the list to look thorough.
+Name at most two. Never pad the list.
 
 ## Common Categories
 
@@ -208,11 +252,9 @@ Never pad the list to look thorough.
 
 ## When Nothing Fits
 
-Say so plainly — it is a useful answer, not a failure:
+This is a common outcome, not a failure. Drop it and build the thing — no report, no explanation of the search, unless the user asked for one. The Step 6 line covers it:
 
 ```
-Nothing here is a good fit — the closest is owner/repo, but it drags in a
-dependency chain you don't want. I'll build it directly.
+Built the background directly — the existing implementations were all tied to
+a physics engine you don't have.
 ```
-
-Then build it yourself. Note in one line what you checked, so the user knows the search happened.

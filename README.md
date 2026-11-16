@@ -24,14 +24,18 @@ The skill walks a fixed sequence:
 2. **Search** — a short query ladder over GitHub repository search, with code search when you need the technique rather than the repo.
 3. **Verify** — drop archived, stale, unlicensed and docs-only results; weigh fit, activity, adoptability and footprint. Stars alone won't do.
 4. **Read the technique** — one to three files, not the whole repo.
-5. **Choose how to build on it** — reimplement, vendor, depend, or fork, plus license rules.
-6. **Present** — working code in the project, not a search page.
+5. **Decide** — one of exactly three outcomes: **adapt** the implementation, use it as a **reference** and write your own, or **drop** it and build from scratch.
+6. **Deliver** — the working feature, plus one line on where the approach came from.
 
-Two modes share that sequence:
+The output is the finished feature, not a shortlist. You say "add an animated background"; you get the background in your project and a line saying it came from `owner/repo` — not a list of three repositories to choose between. The agent decides.
+
+It only stops to ask when the decision is genuinely yours and expensive: adding a dependency, vendoring a large chunk, or a GPL/AGPL license you have to accept. Even then the question is decision-shaped ("this needs `three`, or I can do a flat CSS version with no dependency — which?"), never a menu of repositories.
+
+## Two modes
 
 **Component** — one feature inside an existing codebase. This is the common case. The target is a *file*, not a repository: a 300-file app containing the exact 80-line component you need is a hit. For a self-contained piece, *read two implementations and write your own* is usually right — no dependency, fits the codebase.
 
-**Greenfield** — a whole app, prototype or MVP. The target is a repository you can start from.
+**Greenfield** — a whole app, prototype or MVP. The target is a repository you can start from. This is the one case where the agent presents a choice, because the user is picking a foundation rather than a detail — at most two options, with a recommendation.
 
 ## Install
 
@@ -53,15 +57,15 @@ The YAML frontmatter at the top is how skill-aware agents decide when to load it
 
 Normally you don't invoke it. Mid-project, just name the feature:
 
-> The sidebar needs a drag handle to resize, and collapse to a 3-bar icon on narrow screens.
+> 给网站加个粒子动画背景。
 
-The agent finds a couple of implementations, adapts the approach, and delivers — no approval prompt, because looking is cheap.
+You get the component, wired in, plus one line on where the approach came from. No candidate list, no question.
 
 Starting fresh, the same works:
 
 > Build me a small internal tool to OCR scanned invoices into a table.
 
-To force it, or to get the wider list:
+To force a search, or to get the wider list:
 
 > Use find-github: what open-source projects could I base a self-hosted analytics dashboard on?
 > 有没有现成的开源项目可以参考？
@@ -69,6 +73,7 @@ To force it, or to get the wider list:
 ## What it won't do
 
 - Fire on a typo, a rename, or a copy change.
+- Hand you a list of repositories when you asked for a feature.
 - Clone a repository to answer a question one file read would cover.
 - Add a dependency for something three file reads would have covered.
 - Copy code it doesn't understand, or copyleft code without telling you.
