@@ -1,6 +1,8 @@
 # find-github
 
-A Claude Code skill that finds an existing open-source GitHub project and adopts it, instead of having the agent design everything from scratch.
+A portable Markdown instruction file for AI coding agents. It makes the agent find an existing open-source GitHub project and build on it, instead of designing everything from scratch.
+
+Works with any agent that can read a file or accept a system prompt — Claude Code, Cursor, Codex, Gemini CLI, or a home-grown loop. No scripts, no dependencies, no vendor lock-in.
 
 It fires on its own when you start a new project, prototype or MVP and the hard part probably already exists somewhere — you don't have to ask for a search.
 
@@ -15,21 +17,19 @@ It fires on its own when you start a new project, prototype or MVP and the hard 
 
 ## Install
 
-Personal (all projects):
+The file is plain Markdown. Pick whichever way your agent loads instructions:
+
+**Always-on (recommended).** Append `SKILL.md` to the file your agent reads at the start of every session — `AGENTS.md` at the repo root, or your agent's equivalent instruction file or system prompt. This is what makes it trigger without being asked.
+
+**Skill-aware agents.** Drop it in the skills directory the agent scans:
 
 ```bash
-git clone https://github.com/SS1XTEEN/find-github ~/.claude/skills/find-github
+git clone https://github.com/SS1XTEEN/find-github <your-skills-dir>/find-github
 ```
 
-Project-only:
+The YAML frontmatter at the top is how skill-aware agents decide when to load it. If your agent ignores frontmatter, nothing is lost — the body reads as a standalone instruction set.
 
-```bash
-git clone https://github.com/SS1XTEEN/find-github .claude/skills/find-github
-```
-
-Windows (PowerShell): clone into `$HOME\.claude\skills\find-github`.
-
-Restart Claude Code. `/skills` should list `find-github`.
+**One-off.** Paste the body into the chat or system prompt when you want it for a single task.
 
 ## Usage
 
@@ -46,17 +46,17 @@ To force it, or to get the wider list:
 
 ## Design notes
 
-One Markdown file. No scripts, no dependencies.
+One Markdown file. No scripts, no dependencies, no agent-specific tools.
 
-The search itself is two curl calls, and the value isn't in the HTTP request — it's in the **query ladder** (what to search for), the **gating rules** (what to throw away), the **weighting judgments** (stars are a lagging indicator; a small active repo beats a big dead one), and the **adoption ladder** (depend before forking; never copy copyleft code silently). Those are model judgments, so a skill is the right form factor and a wrapper script would be dead weight.
+The search itself is two curl calls, and the value isn't in the HTTP request — it's in the **query ladder** (what to search for), the **gating rules** (what to throw away), the **weighting judgments** (stars are a lagging indicator; a small active repo beats a big dead one), and the **adoption ladder** (depend before forking; never copy copyleft code silently). Those are model judgments, so instructions are the right form factor and a wrapper script would be dead weight.
 
-The trigger policy is the other half. A skill that only fires when explicitly named solves nothing — that was the original problem. So the description carries "new project / MVP / is there a library for X" triggers plus an explicit do-not-fire list (bugfixes, refactors, small edits) to keep the noise down.
+The trigger policy is the other half. A file that only runs when explicitly named solves nothing — that was the original problem. So the opening description carries "new project / MVP / is there a library for X" triggers plus an explicit do-not-fire list (bugfixes, refactors, small edits) to keep the noise down.
 
 It deliberately stops before touching code. Searching is cheap and reversible; cloning is a decision, so the presentation step is a hard gate.
 
 ## Limits
 
-- Unauthenticated GitHub search allows 10 requests/min; the skill caps itself at 2–4 queries and prefers `gh api` when a token exists.
+- Unauthenticated GitHub search allows 10 requests/min; it caps itself at 2–4 queries and prefers the `gh` CLI when a token exists.
 - Star counts and `pushed_at` are point-in-time. Re-check before adopting.
 - License advice here is a heuristic, not legal advice.
 - Does not evaluate code quality beyond README, size and issue activity — clone and read before committing to a large repo.

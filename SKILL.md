@@ -18,7 +18,7 @@ Search when all three hold:
 
 Skip, and say nothing, when: bugfix / refactor / test / config / small feature in an existing codebase; the user said "from scratch", "no dependencies", "clean room"; a library is already installed or picked; the question is conceptual.
 
-If the user asked explicitly, always search. If you triggered on your own, stay quiet and brief (§6 Quiet mode).
+If the user asked explicitly, always search. If you triggered on your own, stay quiet and brief (see "Present" below).
 
 ## 1. Build brief — 30 seconds, no tool calls
 
@@ -69,14 +69,14 @@ curl -sG https://api.github.com/search/repositories \
 
 Pipe through `jq -r '.items[] | [.full_name, .stargazers_count, .pushed_at[:10], .description] | @tsv'` when jq is available.
 
-If the API is rate-limited or empty, fall back to WebSearch `site:github.com <terms>`, or WebFetch `https://github.com/topics/<topic>`.
+If the API is rate-limited or empty, fall back to a web search for `site:github.com <terms>`, or fetch `https://github.com/topics/<topic>`. Use whatever web search and fetch capability your agent has; the curl commands above need no special tooling.
 
 ## 4. Shortlist
 
 Gate — drop anything that fails:
 
 - Archived, or no push in 12 months.
-- Actually no license (note it; see §7).
+- Actually no license (note it; see the Adopt section).
 - Not code: `awesome-*` lists, docs-only repos, paper repos. Lists are a lead source — mine them for names, never recommend them as a base.
 - Wrong stack when the stack is fixed — unless it's language-agnostic (a Go binary is fine for a TS app).
 
@@ -123,7 +123,7 @@ Answer for each: does it really do the hard part? Is there a seam to adapt (plug
 
 Then one recommendation and one question. Name the runner-up. State the exit condition out loud: "nothing here is a good fit — build it from scratch" is a valid and useful answer. Never pad the list to look thorough.
 
-**Quiet mode** (auto-triggered mid-build) — two lines per candidate, at most two candidates, recommendation folded into the next action. Do not block on approval for a *search*; block before §7.
+**Quiet mode** (auto-triggered mid-build) — two lines per candidate, at most two candidates, recommendation folded into the next action. Do not block on approval for a *search*; block before adopting.
 
 ## 7. Adopt
 
