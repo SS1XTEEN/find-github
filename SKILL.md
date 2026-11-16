@@ -45,7 +45,7 @@ Do **not** use this skill for:
 - "From scratch", "no dependencies", or "clean room" requests
 - A 5–10 line chunk you already know how to write — searching costs more than writing
 
-If the user asked explicitly, always search. If you triggered on your own, do not announce it — search, decide, and deliver the feature as if you had simply known how to build it. Searching is cheap and needs no permission.
+If the user asked explicitly, always search. If you triggered on your own, go ahead and deliver the feature as you normally would — just mention where the approach came from in the delivery line (Step 6). No preamble, no "I searched GitHub and found...", no permission needed. Searching is cheap.
 
 ## Two Modes
 
@@ -252,7 +252,7 @@ Name at most two. Never pad the list.
 
 ## When Nothing Fits
 
-This is a common outcome, not a failure. Drop it and build the thing — no report, no explanation of the search, unless the user asked for one. The Step 6 line covers it:
+This is a common outcome, not a failure. Drop it and build the thing, saying so in the Step 6 delivery line — one clause is enough:
 
 ```
 Built the background directly — the existing implementations were all tied to
