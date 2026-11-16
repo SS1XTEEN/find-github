@@ -1,93 +1,51 @@
 # find-github
 
-A portable Markdown instruction file for AI coding agents. It makes the agent find open-source code to build on — either a repository to start from, or a single technique to study and adapt for one feature — instead of writing everything from scratch.
+A skill for AI coding agents that finds open-source code to build on, instead of writing everything from scratch.
 
-Works with any agent that can read a file or accept a system prompt — Claude Code, Cursor, Codex, Gemini CLI, or a home-grown loop. No scripts, no dependencies, no vendor lock-in.
+## Available Skills
 
-## The problem it solves
+### find-github
 
-Most agent work is not "here is a big idea, build the whole thing." It is a project already underway that hits one small thing needing to exist:
+Finds an existing open-source implementation — a technique for one feature, or a repository for a whole project — then decides on its own whether to adapt it, use it as a reference, or drop it and write the code directly. The output is the working feature plus one line on where it came from, not a list of repositories to choose between.
 
-- the page needs a loading animation, and everyone keeps writing a worse one from scratch
-- the sidebar needs a draggable resize handle and a 3-bar collapse, and the agent hand-rolls it badly
-- a file tree, a command palette, virtual scrolling, OAuth, PDF parsing
+**Use when:**
 
-In those moments the agent should look at how other people solved it, take the technique, and write 60 good lines. Too often it either reinvents it poorly or never thinks to look. That is what this file fixes.
+- Adding a common component or interaction — loading animation, drag-and-drop, resizable sidebar, command palette, virtual scrolling, file tree
+- Starting a new project, prototype, or MVP
+- Building a well-known capability — auth, payments, PDF parsing, OCR, scraping, charts
+- "Is there a library for X", "how do people build X", "找个开源的", "有没有现成的"
 
-It fires on its own when that moment arrives — you don't have to ask.
+**Three outcomes:**
 
-## What it does
+- **Adapt** — the implementation fits; reimplement it, vendor the piece, or depend on the package
+- **Reference** — nothing fits cleanly, but the technique is worth learning; write it yourself
+- **Drop** — the code is worse than what you would write; build it directly
 
-The skill walks a fixed sequence:
+It stops to ask only when the choice is expensive — a new dependency, a large vendor, or a copyleft license.
 
-1. **Frame the need** — the exact behavior, the host stack, and the hard part.
-2. **Search** — a short query ladder over GitHub repository search, with code search when you need the technique rather than the repo.
-3. **Verify** — drop archived, stale, unlicensed and docs-only results; weigh fit, activity, adoptability and footprint. Stars alone won't do.
-4. **Read the technique** — one to three files, not the whole repo.
-5. **Decide** — one of exactly three outcomes: **adapt** the implementation, use it as a **reference** and write your own, or **drop** it and build from scratch.
-6. **Deliver** — the working feature, plus one line on where the approach came from.
+## Installation
 
-The output is the finished feature, not a shortlist. You say "add an animated background"; you get the background in your project and a line saying it came from `owner/repo` — not a list of three repositories to choose between. The agent decides.
-
-It only stops to ask when the decision is genuinely yours and expensive: adding a dependency, vendoring a large chunk, or a GPL/AGPL license you have to accept. Even then the question is decision-shaped ("this needs `three`, or I can do a flat CSS version with no dependency — which?"), never a menu of repositories.
-
-## Two modes
-
-**Component** — one feature inside an existing codebase. This is the common case. The target is a *file*, not a repository: a 300-file app containing the exact 80-line component you need is a hit. For a self-contained piece, *read two implementations and write your own* is usually right — no dependency, fits the codebase.
-
-**Greenfield** — a whole app, prototype or MVP. The target is a repository you can start from. This is the one case where the agent presents a choice, because the user is picking a foundation rather than a detail — at most two options, with a recommendation.
-
-## Install
-
-The file is plain Markdown. Pick whichever way your agent loads instructions:
-
-**Always-on (recommended).** Append `SKILL.md` to the file your agent reads at the start of every session — `AGENTS.md` at the repo root, or your agent's equivalent instruction file or system prompt. This is what makes it trigger without being asked.
-
-**Skill-aware agents.** Drop it in the skills directory the agent scans:
+Append `SKILL.md` to the file your agent reads at the start of every session (`AGENTS.md` or equivalent), or drop it in your agent's skills directory:
 
 ```bash
 git clone https://github.com/SS1XTEEN/find-github <your-skills-dir>/find-github
 ```
 
-The YAML frontmatter at the top is how skill-aware agents decide when to load it. If your agent ignores frontmatter, nothing is lost — the body reads as a standalone instruction set.
-
-**One-off.** Paste the body into the chat or system prompt when you want it for a single task.
-
 ## Usage
 
-Normally you don't invoke it. Mid-project, just name the feature:
+Skills are automatically available once installed. The agent uses this one when a relevant task is detected.
 
-> 给网站加个粒子动画背景。
+```
+给网站加个粒子动画背景
+```
 
-You get the component, wired in, plus one line on where the approach came from. No candidate list, no question.
+```
+Build me a small internal tool to OCR scanned invoices into a table.
+```
 
-Starting fresh, the same works:
+## Skill Structure
 
-> Build me a small internal tool to OCR scanned invoices into a table.
-
-To force a search, or to get the wider list:
-
-> Use find-github: what open-source projects could I base a self-hosted analytics dashboard on?
-> 有没有现成的开源项目可以参考？
-
-## What it won't do
-
-- Fire on a typo, a rename, or a copy change.
-- Hand you a list of repositories when you asked for a feature.
-- Clone a repository to answer a question one file read would cover.
-- Add a dependency for something three file reads would have covered.
-- Copy code it doesn't understand, or copyleft code without telling you.
-
-## Limits
-
-- Unauthenticated GitHub search allows 10 requests/min; the skill caps itself at 2–4 queries and prefers the `gh` CLI when a token exists. Code search requires auth and cannot filter by stars.
-- Star counts and `pushed_at` are point-in-time. Re-check before adopting.
-- License advice here is a heuristic, not legal advice.
-- Does not evaluate code quality beyond README, file size and issue activity — read before committing to a large repo.
-
-## Contributing
-
-Keep it one file. Changes should survive the question: "would a script do this better than a sentence?" If yes, it probably belongs in the failure-modes list instead.
+- `SKILL.md` — instructions for the agent
 
 ## License
 
