@@ -1,30 +1,37 @@
 # find-github
 
-A portable Markdown instruction file for AI coding agents. It makes the agent find open-source code to build on — either a repo to start from, or a single technique to study and adapt for one feature — instead of writing everything from scratch.
+A portable Markdown instruction file for AI coding agents. It makes the agent find open-source code to build on — either a repository to start from, or a single technique to study and adapt for one feature — instead of writing everything from scratch.
 
 Works with any agent that can read a file or accept a system prompt — Claude Code, Cursor, Codex, Gemini CLI, or a home-grown loop. No scripts, no dependencies, no vendor lock-in.
 
 ## The problem it solves
 
-Most agent work isn't "here's a big idea, build the whole thing." It's a project already underway that hits one small thing needing to exist:
+Most agent work is not "here is a big idea, build the whole thing." It is a project already underway that hits one small thing needing to exist:
 
 - the page needs a loading animation, and everyone keeps writing a worse one from scratch
-- the sidebar needs a draggable resize handle and a 3-bar collapse — and the agent hand-rolls it badly
+- the sidebar needs a draggable resize handle and a 3-bar collapse, and the agent hand-rolls it badly
 - a file tree, a command palette, virtual scrolling, OAuth, PDF parsing
 
-In those moments the agent should look at how other people solved it, take the technique, and write 60 good lines. Too often it either reinvents it poorly or never thinks to look. That's what this file fixes.
+In those moments the agent should look at how other people solved it, take the technique, and write 60 good lines. Too often it either reinvents it poorly or never thinks to look. That is what this file fixes.
 
 It fires on its own when that moment arrives — you don't have to ask.
 
-## How it works
+## What it does
 
-The skill distinguishes two modes, and treats the first as the common one:
+The skill walks a fixed sequence:
 
-**Component** — one feature inside an existing codebase. The agent frames the exact behavior, searches for implementations, reads the one or three files that matter, and picks the cheapest path that works: reimplement the technique, vendor a small piece, or add a dependency. For a self-contained piece, *study and reimplement* is usually right — no dependency, fits your codebase, ~60 lines.
+1. **Frame the need** — the exact behavior, the host stack, and the hard part.
+2. **Search** — a short query ladder over GitHub repository search, with code search when you need the technique rather than the repo.
+3. **Verify** — drop archived, stale, unlicensed and docs-only results; weigh fit, activity, adoptability and footprint. Stars alone won't do.
+4. **Read the technique** — one to three files, not the whole repo.
+5. **Choose how to build on it** — reimplement, vendor, depend, or fork, plus license rules.
+6. **Present** — working code in the project, not a search page.
 
-**Greenfield** — a whole app, prototype or MVP. It identifies the hard part, runs a query ladder, gates out stale and unlicensed repos, scores the rest on fit/activity/adoptability/footprint, and recommends one.
+Two modes share that sequence:
 
-In both modes the deliverable is working code in your project, never a page of search results. There is one hard gate: nothing expensive — a dependency, a vendor, a clone — without saying so first.
+**Component** — one feature inside an existing codebase. This is the common case. The target is a *file*, not a repository: a 300-file app containing the exact 80-line component you need is a hit. For a self-contained piece, *read two implementations and write your own* is usually right — no dependency, fits the codebase.
+
+**Greenfield** — a whole app, prototype or MVP. The target is a repository you can start from.
 
 ## Install
 
@@ -62,13 +69,13 @@ To force it, or to get the wider list:
 ## What it won't do
 
 - Fire on a typo, a rename, or a copy change.
-- Clone a repo to answer a question it could answer by reading one file.
+- Clone a repository to answer a question one file read would cover.
 - Add a dependency for something three file reads would have covered.
 - Copy code it doesn't understand, or copyleft code without telling you.
 
 ## Limits
 
-- Unauthenticated GitHub search allows 10 requests/min; it caps itself at 2–4 queries and prefers the `gh` CLI when a token exists. Code search requires auth and can't filter by stars.
+- Unauthenticated GitHub search allows 10 requests/min; the skill caps itself at 2–4 queries and prefers the `gh` CLI when a token exists. Code search requires auth and cannot filter by stars.
 - Star counts and `pushed_at` are point-in-time. Re-check before adopting.
 - License advice here is a heuristic, not legal advice.
 - Does not evaluate code quality beyond README, file size and issue activity — read before committing to a large repo.

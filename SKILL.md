@@ -1,85 +1,61 @@
 ---
 name: find-github
-description: Find open-source code to build on instead of writing from scratch — either a repo to start from, or a single piece to study and adapt for one feature. Use when adding a specific component or behavior to an existing project (loading animation, drag-and-drop, resizable sidebar, command palette, virtual scrolling, file tree, rich text, chart, upload, auth, payments, PDF parsing, OCR, scraping); when starting a new project, prototype or MVP; or when the user says "is there a library for X", "how do people build X", "don't reinvent this", "找个开源的", "参考一下开源项目". Do NOT use for bugfixes, refactors, tests, config, copy changes, or when a library is already chosen.
-license: MIT
+description: >-
+  Helps users find open-source GitHub code to build on — a repository to start from,
+  or a technique to study and adapt for one feature. Use when the user asks
+  "is there a library for X", "how do people build X", "find an open source project for X",
+  "找个开源的", "参考一下开源项目", when starting a new project or MVP, or when adding a
+  common component or capability (loading animation, drag-and-drop, resizable sidebar,
+  command palette, virtual scrolling, auth, payments, PDF parsing, OCR, scraping).
 ---
 
-# Find & Build On Open-Source Code
+# Find GitHub
 
-Most of the time this is not "here's a big idea, go find a whole repo." It's "this one small thing needs to exist" — a loading animation, a drag handle, a resizable sidebar — in a project that's already underway. The job is to find how people have solved it, take the technique, and land working code fast.
+This skill helps you find existing open-source code instead of writing everything from scratch, and then build on it.
 
-Two entry modes, and the first is by far the more common:
+Most of the time you are not looking for a whole repository. You are looking for one thing that already needs to exist inside a project that is already underway — a loading animation, a drag handle, a file tree. The job is to find how people solved it, take the technique, and land working code fast.
 
-- **Component** — one feature or behavior inside an existing codebase.
-- **Greenfield** — a whole app, prototype or MVP from scratch.
+## When to Use This Skill
 
-The deliverable is always working code in the user's project. Never a page of search results.
+Use this skill when:
 
-## 0. Decide whether to search
+- The user asks "is there a library for X", "how do people build X", "找点开源的", "有没有现成的"
+- The user wants to add a recognizable component or interaction to an existing project — a loading state, a resizable sidebar, drag-and-drop, a command palette, a file tree, virtual scrolling
+- The user starts a new project, prototype, or MVP
+- The user says "don't reinvent this" or "we shouldn't build this ourselves"
+- You are about to write a self-contained chunk that probably exists somewhere, not edit a line or two
 
-Fire when:
+Do **not** use this skill for:
 
-- A **new capability** is being added — not a change to something that exists. The tell: you're about to write a self-contained chunk (a component, an interaction, a parser, an animation) rather than edit a line or two.
-- The problem is recognizable and probably solved before: drag-and-drop, virtual scrolling, file upload, auth, payments, OCR, PDF parsing, charts, editors, loading states, resizable panes.
-- Nothing is already chosen — check the manifest and the conversation first.
+- Bugfixes, refactors, tests, config changes, renames, styling tweaks
+- Wiring up a dependency that is already installed
+- Pure conceptual questions
+- "From scratch", "no dependencies", or "clean room" requests
+- A 5–10 line chunk you already know how to write — searching costs more than writing
 
-Stay out when: bugfix, refactor, test, config, copy or styling tweak, rename, wiring up an existing dependency, pure conceptual question, "from scratch"/"no dependencies"/"clean room", or a library is already installed.
+If the user asked explicitly, always search. If you triggered on your own, look quietly and report briefly — searching is cheap and needs no permission.
 
-Also stay out when the chunk is trivial — 5–10 lines you already know how to write. Searching costs more than writing there.
+## Two Modes
 
-If the user asked explicitly, always search. If you triggered on your own, go quiet (see **Present**) — looking is cheap and needs no permission.
+**Component** — one feature inside an existing codebase. This is the common case. The target is a *file*, not a repository: a 300-file app containing the exact 80-line component you need is a hit.
 
-## 1. Frame the need — a few lines, no tool calls
+**Greenfield** — a whole app, prototype, or MVP from scratch. The target is a repository you can start from.
 
-**Component:** the exact behavior in one sentence ("sidebar edge is draggable to resize; collapses to a 3-bar rail below a threshold"), the host stack and constraints (framework, version, styling approach, bundle budget, "no new deps"), and what done looks like.
+## Step 1: Frame the Need
 
-**Greenfield:** what's being built, the stack, the hardest part, constraints.
+Before searching, identify:
 
-Search for the **hard part**, not the whole product. If it's genuinely ambiguous, ask one question; otherwise infer and proceed.
+1. **The exact behavior** — "sidebar edge is draggable to resize, collapses to a 3-bar rail below a threshold"
+2. **The host stack** — framework and version, styling approach, constraints ("no new deps", bundle budget)
+3. **The hard part** — the specific piece that would take longest to build
 
-## 2. Decide: study, adapt, or depend
+Search for the hard part, not the whole product. If the need is genuinely ambiguous, ask one question; otherwise infer and proceed.
 
-This is the decision most agents get wrong. For a small self-contained piece, the cheapest good outcome is usually **read two or three implementations and write your own** — no dependency, fits the codebase, maybe 60 lines. That beats pulling in a package, and often beats writing it cold.
+## Step 2: Search GitHub
 
-| The need is… | Do this | Cost |
-|---|---|---|
-| Small and self-contained, a few hundred lines at most | **Study & reimplement** | a few file reads |
-| A technique you don't know, but a small surface | **Study & reimplement**, credit the source | a few file reads |
-| Bigger than you want to own, actively maintained | **Vendor** the relevant part | copy + adapt |
-| A standard, well-scoped problem (auth, payments, charts) | **Depend** on the library | install |
-| Whole-app starting point | **Fork** | clone + strip |
+### Repository search
 
-Default to the cheapest row that works. A dependency for a loading spinner is a bad trade; hand-rolling a PDF parser is worse. If you can't tell which row applies yet, search first — the size and maturity of what exists makes it obvious.
-
-## 3. Query ladder
-
-Run 2–4 queries. Climb until the results look right. Rate limit is 10/min unauthenticated, 30 authenticated.
-
-**Component / technique:**
-
-| # | Pattern | Example |
-|---|---|---|
-| 1 | `<framework> <behavior>` | `react resizable sidebar` |
-| 2 | Platform + effect | `css loading spinner animation` |
-| 3 | The pattern's own name | `command palette`, `virtual scrolling` |
-| 4 | `topic:` or curated lists | `topic:drag-and-drop`, `awesome css animations` |
-
-**Greenfield:**
-
-| # | Pattern | Example |
-|---|---|---|
-| 1 | `<product> alternative` / `open source <product>` / `<product> clone` | `open source notion alternative` |
-| 2 | Capability phrase | `pdf table extraction` |
-| 3 | Capability + `topic:` or `language:` | `scraping language:typescript` |
-| 4 | `<stack> starter` / `boilerplate` / `template` | `nextjs saas starter` |
-
-For a component, the target is a **file**, not a repo. A 300-file app containing the exact 80-line component you need is a hit — judge the file.
-
-Always qualify with `stars:>100 pushed:>DATE archived:false in:name,description,readme` (DATE ≈ 12 months back — compute it). Drop `in:...` if results are thin; raise `stars:` if they're noise. For niche techniques `stars:>20` finds more.
-
-## 4. Search
-
-**Repos** — preferred form, if `gh` holds a token:
+Authenticated (preferred — `gh` usually already holds a token):
 
 ```bash
 gh api -X GET search/repositories \
@@ -96,36 +72,63 @@ curl -sG https://api.github.com/search/repositories \
   -d sort=stars -d per_page=15
 ```
 
-**Code** — when you want to see how a thing was built, not which repo it lives in (needs auth):
+### Code search
+
+When you want to see how a thing was built rather than which repository it lives in (requires auth):
 
 ```bash
 gh api -X GET search/code -f q='useResizable language:typescript' \
   -f per_page=10 --jq '.items[] | [.repository.full_name, .path] | @tsv'
 ```
 
-Code search supports `repo:owner/name`, `path:`, `filename:`, and `language:` — but **not** `stars:`, so it can't filter by popularity on its own. To stay on well-known repos, pick a repo from the repository search first and scope with `repo:owner/name`, or look for a distinctive symbol name (`filename:useResizable.ts` beats describing the behavior in prose).
+Code search supports `repo:owner/name`, `path:`, `filename:`, and `language:` — but **not** `stars:`. To stay on well-known repositories, pick one from repository search first and scope with `repo:owner/name`. A distinctive symbol name (`filename:useResizable.ts`) beats describing the behavior in prose.
 
-If rate-limited or empty, fall back to a web search for `site:github.com <terms>`, or fetch `https://github.com/topics/<topic>`. Use whatever search and fetch capability your agent has; the curl commands need no special tooling.
+### Query patterns
 
-## 5. Shortlist
+Run 2–4 queries, not more (10 req/min unauthenticated, 30 authenticated). Climb until the results look right.
 
-Gate — drop anything that fails:
+For a component:
 
-- Archived, or no push in 12 months.
-- No license at all (note it; see **Build on it**).
-- Not code: `awesome-*` lists, docs-only repos, paper repos. Lists are lead sources — mine them for names.
-- Wrong stack when the stack is fixed — unless it's language-agnostic.
+| Query | Example |
+|-------|---------|
+| `<framework> <behavior>` | `react resizable sidebar` |
+| Platform + effect | `css loading spinner animation` |
+| The pattern's own name | `command palette`, `virtual scrolling` |
+| `topic:` or curated lists | `topic:drag-and-drop` |
 
-Score survivors 0–2 on Fit / Alive / Adoptable / Footprint. For a component, **Fit and Footprint dominate**: a 400-star focused implementation beats a 30k-star app you'd have to excavate.
+For greenfield:
 
-Then apply judgment:
+| Query | Example |
+|-------|---------|
+| `<product> alternative` | `open source notion alternative` |
+| Capability phrase | `pdf table extraction` |
+| `<stack> starter` | `nextjs saas starter` |
 
-- Stars are a lagging indicator. A repo created two months ago with 8k stars and no release is hype — check `created_at`.
-- A 2k-star repo still committing beats a 30k-star repo abandoned in 2024.
-- Building an app? Prefer starters over frameworks. Adding a capability? Prefer a library or a file over an app you'd have to strip.
-- Recent *answered* issues mean the thing works and someone is home.
+Always qualify with `stars:>100 pushed:>DATE archived:false`, where DATE is about 12 months back — compute it, don't copy it blind. Drop the qualifiers if results are thin; raise `stars:` if they are noise. For niche techniques, `stars:>20` finds more.
 
-## 6. Read the technique, not the project
+If the API is rate-limited or empty, fall back to a web search for `site:github.com <terms>`, or fetch `https://github.com/topics/<topic>`.
+
+## Step 3: Verify Quality Before Recommending
+
+Do not recommend something based solely on search results. Drop anything that:
+
+- Is archived, or has had no push in 12 months
+- Has no license at all (note it — see Step 5)
+- Is not code: `awesome-*` lists, docs-only repos, paper repos. Lists are lead sources — mine them for names.
+- Uses the wrong stack when the stack is fixed, unless it is language-agnostic
+
+Then check, in order:
+
+1. **Fit** — does it actually do the hard part, or something adjacent?
+2. **Activity** — commits and merged PRs in the last 3 months?
+3. **Adoptability** — permissive license, docs, a clear entrypoint, real seams to hook into?
+4. **Footprint** — small enough to read and adapt? Heavy dependency chain?
+
+Be careful with stars. They are a lagging indicator: a repository created two months ago with 8k stars and no release is hype — check `created_at`. A 2k-star repository still committing beats a 30k-star one abandoned in 2024. Recent *answered* issues mean the thing works and someone is home.
+
+For a component, **fit and footprint dominate**: a 400-star focused implementation beats a 30k-star app you would have to excavate.
+
+## Step 4: Read the Technique, Not the Project
 
 For each shortlisted candidate, read the one to three files that matter:
 
@@ -133,19 +136,49 @@ For each shortlisted candidate, read the one to three files that matter:
 curl -sL https://raw.githubusercontent.com/OWNER/REPO/HEAD/PATH | head -150
 ```
 
-Locate the file via code search, the repo's contents listing, or a path in its docs. You're after the **mechanism** — the CSS trick, the event math, the state shape — plus what it assumes (deps, framework version, browser quirks, known edge cases from issues).
+Locate the file through code search, the repository's contents listing, or a path in its docs. You are after the **mechanism** — the CSS trick, the event math, the state shape — plus what it assumes: dependencies, framework version, browser quirks, and known edge cases from issues.
 
-Do not clone a repo to read one file. Do not read a repo end to end.
+Do not clone a repository to read one file. Do not read a repository end to end.
 
-## 7. Present
+## Step 5: Choose How to Build On It
 
-**Mid-project (the common case)** — two or three lines, then act:
+This is the decision agents get wrong most often. For a small self-contained piece, the cheapest good outcome is usually **read two or three implementations and write your own** — no dependency, fits the codebase, maybe 60 lines.
 
-> Found three implementations. The cleanest is a `transform` + threshold check in `owner/repo` (~70 lines, no deps). Adapting that approach — no dependency needed.
+| The need is… | Do this |
+|--------------|---------|
+| Small and self-contained, a few hundred lines at most | **Reimplement** the technique |
+| A technique you don't know, but a small surface | **Reimplement**, credit the source |
+| Bigger than you want to own, actively maintained | **Vendor** the relevant part |
+| A standard, well-scoped problem (auth, payments, charts) | **Depend** on the library |
+| A whole-app starting point | **Fork** |
 
-Don't stop for approval to *look* or to reimplement. Stop only when the choice is expensive: adding a dependency, vendoring a large chunk, or a license question.
+Default to the cheapest row that works. A dependency for a loading spinner is a bad trade; hand-rolling a PDF parser is worse.
 
-**Explicit ask or greenfield** — compact list, ≤12 lines, one recommendation, name the runner-up:
+### License rules
+
+Check before copying, and tell the user:
+
+- **MIT / Apache-2.0 / BSD / ISC** — keep `LICENSE`, add attribution in the README. Fine.
+- **MPL-2.0** — fine for vendored files if their headers stay intact.
+- **GPL / AGPL** — the derivative must be open-sourced, and AGPL reaches network services. Flag it; prefer reimplementing.
+- **No license** — all rights reserved. Do not copy. Reimplement from understanding, or ask the author.
+
+### Safety
+
+Before trusting a repository, read its `package.json` scripts, `Makefile`, or setup steps. Do not run install or build in a freshly cloned stranger repository without looking — install scripts execute code. Use `npm ci --ignore-scripts` to inspect first.
+
+## Step 6: Present
+
+**Mid-project** — two or three lines, then act:
+
+```
+Found three implementations. The cleanest is a transform + threshold check in
+owner/repo (~70 lines, no deps). Adapting that approach — no dependency needed.
+```
+
+Do not stop for approval to look or to reimplement. Stop only when the choice is expensive: adding a dependency, vendoring a large chunk, or a license question.
+
+**Explicit ask or greenfield** — a compact list, one recommendation, name the runner-up:
 
 ```
 1. owner/repo  ★12.3k · pushed 2026-09 · MIT
@@ -153,36 +186,33 @@ Don't stop for approval to *look* or to reimplement. Stop only when the choice i
    Catch: <one line — the real cost of adopting it>
 ```
 
-State the exit condition out loud: "nothing here is a good fit — build it" is a valid and useful answer. Never pad the list to look thorough.
+Never pad the list to look thorough.
 
-## 8. Build on it
+## Common Categories
 
-| Mode | How |
-|---|---|
-| **Reimplement** | write it into the codebase in the host project's style; credit the source in a one-line comment when the technique is distinctive; never paste code you don't understand |
-| **Vendor** | copy the part plus its license header, adapt |
-| **Depend** | install, wire it up, copy no code |
-| **Fork** | `git clone --depth 1`, `rm -rf .git`, strip, rename |
+| Category | Example Queries |
+|----------|-----------------|
+| UI components | loading, spinner, modal, command palette, toast |
+| Interaction | drag-and-drop, resize, virtual scrolling, keyboard shortcuts |
+| Data display | charts, tables, timeline, file tree |
+| Documents | pdf parsing, ocr, markdown, export |
+| Auth & payments | oauth, jwt, stripe, subscription |
+| Infrastructure | scraping, queue, cache, cron |
 
-License rules — check before copying, and tell the user:
+## Tips for Effective Searches
 
-- MIT / Apache-2.0 / BSD / ISC: keep `LICENSE`, add attribution in the README. Fine.
-- MPL-2.0: fine for vendored files if their headers stay intact.
-- GPL / AGPL: the derivative must be open-sourced (AGPL reaches network services). Flag it; prefer reimplementing.
-- No license: all rights reserved. Do not copy — reimplement from understanding, or ask the author.
+1. **Search the pattern's name**, not the description — "command palette" beats "a search box that opens with a keyboard shortcut"
+2. **Try alternative terms** — if "resizable" fails, try "split pane", "drag handle", "resize observer"
+3. **Search for a symbol, not a concept** — `filename:useResizable.ts` finds implementations directly
+4. **Read the highest-starred implementation first** to learn the shape of the problem, then find the smallest one that fits
 
-Before trusting a repo, read its `package.json` scripts / `Makefile` / setup steps. Don't run install or build in a freshly cloned stranger repo without looking — install scripts execute code. `npm ci --ignore-scripts` to inspect first.
+## When Nothing Fits
 
-Then strip what isn't needed and write the delta as the user's own code.
+Say so plainly — it is a useful answer, not a failure:
 
-## Failure modes
+```
+Nothing here is a good fit — the closest is owner/repo, but it drags in a
+dependency chain you don't want. I'll build it directly.
+```
 
-- Treating a one-component request as a whole-product request.
-- Cloning a repo to answer a 60-line question.
-- Adding a dependency for something three file reads would have covered.
-- Reading a whole repo to extract one file.
-- Copying code you don't understand.
-- Returning a search page instead of working code.
-- Ranking by stars alone.
-- Adopting copyleft code without saying so.
-- Firing on a typo because the word "extract" appeared in the prompt.
+Then build it yourself. Note in one line what you checked, so the user knows the search happened.
