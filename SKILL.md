@@ -1,12 +1,18 @@
 ---
 name: find-github
 description: >-
-  Helps users find open-source GitHub code to build on — a repository to start from,
-  or a technique to study and adapt for one feature. Use when the user asks
-  "is there a library for X", "how do people build X", "find an open source project for X",
-  "找个开源的", "参考一下开源项目", when starting a new project or MVP, or when adding a
-  common component or capability (loading animation, drag-and-drop, resizable sidebar,
-  command palette, virtual scrolling, auth, payments, PDF parsing, OCR, scraping).
+  Find existing open-source code to build on instead of writing from scratch.
+  Use whenever the user mentions 开源 / open source / open-source, says 参考 / 借鉴 /
+  找点现成的 / 有没有现成的 / "is there a library for X" / "how do people build X", or
+  when they ask to improve, redesign, modernize, upgrade or "make better looking"
+  an existing UI or feature (太简陋 / 不够好看 / 改成高级 / 美化 / polish / redesign /
+  make it look professional) — that is a prime trigger, not a styling tweak. Also
+  use when adding a recognizable component or capability (loading animation,
+  drag-and-drop, resizable sidebar, command palette, virtual scrolling, file tree,
+  auth, payments, PDF parsing, OCR, scraping), or starting a new project or MVP.
+  Prefer this over a generic web search whenever the goal is "how do I implement X".
+  Do not use for bugfixes, tests, config, copy edits, or a single-property change
+  such as one color, padding or font size.
 ---
 
 # Find GitHub
@@ -16,6 +22,10 @@ This skill helps you find existing open-source code instead of writing everythin
 Most of the time you are not looking for a whole repository. You are looking for one thing that already needs to exist inside a project that is already underway — a loading animation, a drag handle, a file tree. The job is to find how people solved it, take the technique, and land working code fast.
 
 **The output is the finished feature, not a shortlist.** The user said "add an animated background" — they want the background in their site, plus one line saying where the approach came from. They do not want to hear that three repositories were found and be asked to choose. You decide; you write the code.
+
+**This skill replaces your default research reflex.** When the task is "how do I build X", your instinct is to run a web search. Don't — use the GitHub search path below instead. Web search gives you blog posts and tutorials; GitHub search gives you working code you can read and adapt. Only fall back to web search when the API is rate-limited or returns nothing.
+
+The same applies to your default implementation reflex. Before writing a component, interaction or visual treatment from scratch, assume a good version exists and that reading two implementations will produce a better result than reconstructing it from memory. The exception is a 5–10 line chunk you already know cold.
 
 Worked example of a correct outcome:
 
@@ -31,19 +41,23 @@ That is the whole response. No candidate list, no question.
 
 Use this skill when:
 
-- The user asks "is there a library for X", "how do people build X", "找点开源的", "有没有现成的"
-- The user wants to add a recognizable component or interaction to an existing project — a loading state, a resizable sidebar, drag-and-drop, a command palette, a file tree, virtual scrolling
+- The user mentions 开源 / open source in any phrasing, or says 参考 / 借鉴 / 找点现成的 / 有没有现成的
+- The user asks to **improve, redesign, modernize or upgrade** an existing UI or feature — "太简陋了", "不够好看", "改成高级", "美化一下", "make it look professional", "polish this". This is a **prime trigger**: a redesign is exactly when someone else's implementation is worth reading. Treat it as a build task, not a styling tweak.
+- The user wants to add a recognizable component or interaction — a loading state, a resizable sidebar, drag-and-drop, a command palette, a file tree, virtual scrolling
 - The user starts a new project, prototype, or MVP
 - The user says "don't reinvent this" or "we shouldn't build this ourselves"
 - You are about to write a self-contained chunk that probably exists somewhere, not edit a line or two
+- You are about to answer "how do I implement X" — read real implementations before answering from memory
 
 Do **not** use this skill for:
 
-- Bugfixes, refactors, tests, config changes, renames, styling tweaks
+- Bugfixes, tests, config changes, renames
+- Copy edits — changing words, labels or messages
+- A single-property tweak: one color, one padding value, one font size
 - Wiring up a dependency that is already installed
-- Pure conceptual questions
-- "From scratch", "no dependencies", or "clean room" requests
-- A 5–10 line chunk you already know how to write — searching costs more than writing
+- Pure conceptual questions with no implementation
+
+**Redesign vs. tweak.** "Make this panel look better / more professional / less cramped" is a redesign — use this skill. "Make this button blue" is a tweak — just do it. The tell is scope: if you would rewrite the component's structure or interactions, search; if you would change a value, don't.
 
 If the user asked explicitly, always search. If you triggered on your own, go ahead and deliver the feature as you normally would — just mention where the approach came from in the delivery line (Step 6). No preamble, no "I searched GitHub and found...", no permission needed. Searching is cheap.
 
